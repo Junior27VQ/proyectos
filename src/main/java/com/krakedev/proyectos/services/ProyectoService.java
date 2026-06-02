@@ -9,52 +9,52 @@ import com.krakedev.proyectos.repositories.ProyectoRepository;
 @Service
 public class ProyectoService {
 
-    private final ProyectoRepository proyectoRepo;
+	private final ProyectoRepository proyectoRepo;
 
-    public ProyectoService(ProyectoRepository repo) {
-        this.proyectoRepo = repo;
-    }
+	public ProyectoService(ProyectoRepository repo) {
+		this.proyectoRepo = repo;
+	}
 
-    public Proyecto guardar(Proyecto nuevo) {
-        Proyecto proyecto=proyectoRepo.findById(nuevo.getId())
-        		.orElseThrow(() -> new RuntimeException("El proyecto no existe."));
-        
-        proyecto.setId(nuevo.getId());
-        proyecto.setNombre(nuevo.getNombre());
-        proyecto.setDescripcion(nuevo.getDescripcion());
-        proyecto.setFechaInicio(nuevo.getFechaInicio());
-        
-        return proyectoRepo.save(proyecto);
-    }
+	public Proyecto guardar(Proyecto nuevo) {
+		Proyecto proyecto = proyectoRepo.findById(nuevo.getId())
+				.orElseThrow(() -> new RuntimeException("El proyecto no existe."));
 
-    public List<Proyecto> listar() {
-        return proyectoRepo.findAll();
-    }
+		proyecto.setId(nuevo.getId());
+		proyecto.setNombre(nuevo.getNombre());
+		proyecto.setDescripcion(nuevo.getDescripcion());
+		proyecto.setFechaInicio(nuevo.getFechaInicio());
 
-    public Proyecto buscar(int id) {
-        Optional<Proyecto> existe=proyectoRepo.findById(id);
-        return existe.orElse(null);
-    }
+		return proyectoRepo.save(proyecto);
+	}
 
-    public Proyecto actualizar(int id, Proyecto nuevo) {
-    	Proyecto proyecto=buscar(id);
-    	if(proyecto == null) {
-    		return null;
-    	}
-    	
-    	proyecto.setNombre(nuevo.getNombre());
-        proyecto.setDescripcion(nuevo.getDescripcion());
-        proyecto.setFechaInicio(nuevo.getFechaInicio());
-    	
-    	return proyectoRepo.save(proyecto);
-    }
+	public List<Proyecto> listar() {
+		return proyectoRepo.findAll();
+	}
 
-    public boolean eliminar(int id) {
-    	Proyecto existe=buscar(id);
-    	if(existe == null) {
-    		return false;
-    	}
-    	proyectoRepo.deleteById(id);
-    	return true;
-    }
+	public Proyecto buscar(int id) {
+		Optional<Proyecto> existe = proyectoRepo.findById(id);
+		return existe.orElse(null);
+	}
+
+	public Proyecto actualizar(int id, Proyecto nuevo) {
+		Proyecto proyecto = buscar(id);
+		if (proyecto == null) {
+			return null;
+		}
+
+		proyecto.setNombre(nuevo.getNombre());
+		proyecto.setDescripcion(nuevo.getDescripcion());
+		proyecto.setFechaInicio(nuevo.getFechaInicio());
+
+		return proyectoRepo.save(proyecto);
+	}
+
+	public boolean eliminar(int id) {
+		Proyecto existe = buscar(id);
+		if (existe == null) {
+			return false;
+		}
+		proyectoRepo.deleteById(id);
+		return true;
+	}
 }

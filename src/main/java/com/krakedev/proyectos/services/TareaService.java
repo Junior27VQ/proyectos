@@ -18,51 +18,56 @@ public class TareaService {
 	private final TareaRepository tareaRepo;
 	private final ProyectoRepository proyectoRepo;
 	private final EmpleadoRepository empleadoRepo;
+
 	public TareaService(TareaRepository tareaRepo, ProyectoRepository proyectoRepo, EmpleadoRepository empleadoRepo) {
 		super();
 		this.tareaRepo = tareaRepo;
 		this.proyectoRepo = proyectoRepo;
 		this.empleadoRepo = empleadoRepo;
 	}
-	
+
 	public Tarea crear(Tarea nuevo) {
-		Proyecto proyecto=proyectoRepo.findById(nuevo.getProyecto().getId())
+		Proyecto proyecto = proyectoRepo.findById(nuevo.getProyecto().getId())
 				.orElseThrow(() -> new RuntimeException("El proyecto no existe."));
-		List<Empleado> empleados=new ArrayList<>();
-		for(Empleado e:nuevo.getEmpleados()) {
-			Empleado existe=empleadoRepo.findById(e.getId())
-					.orElseThrow(() -> new RuntimeException("El mecanico no existe."));;
+		List<Empleado> empleados = new ArrayList<>();
+		for (Empleado e : nuevo.getEmpleados()) {
+			Empleado existe = empleadoRepo.findById(e.getId())
+					.orElseThrow(() -> new RuntimeException("El mecanico no existe."));
+			;
 			empleados.add(existe);
 		}
-		
+
 		nuevo.setProyecto(proyecto);
 		nuevo.setEmpleados(empleados);
-		
+
 		return nuevo;
 	}
-	
-	public List<Tarea> listar(){
+
+	public List<Tarea> listar() {
 		return tareaRepo.findAll();
 	}
+
 	public Tarea buscar(int id) {
-		Optional<Tarea> tarea=tareaRepo.findById(id);
+		Optional<Tarea> tarea = tareaRepo.findById(id);
 		return tarea.orElse(null);
 	}
+
 	public Tarea actualizar(int id, Tarea nuevo) {
-		Tarea tarea=buscar(id);
-		if(tarea == null) {
+		Tarea tarea = buscar(id);
+		if (tarea == null) {
 			return null;
 		}
-		
+
 		tarea.setDescripcion(nuevo.getDescripcion());
 		tarea.setCostoEstimado(nuevo.getCostoEstimado());
 		tarea.setFechaLimite(nuevo.getFechaLimite());
-		
+
 		return tareaRepo.save(tarea);
 	}
+
 	public boolean eliminar(int id) {
-		Tarea existe=buscar(id);
-		if(existe == null) {
+		Tarea existe = buscar(id);
+		if (existe == null) {
 			return false;
 		}
 		tareaRepo.deleteById(id);

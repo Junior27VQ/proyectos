@@ -15,14 +15,7 @@ public class ProyectoService {
 		this.proyectoRepo = repo;
 	}
 
-	public Proyecto guardar(Proyecto nuevo) {
-		Proyecto proyecto = proyectoRepo.findById(nuevo.getId())
-				.orElseThrow(() -> new RuntimeException("El proyecto no existe."));
-
-		proyecto.setId(nuevo.getId());
-		proyecto.setNombre(nuevo.getNombre());
-		proyecto.setDescripcion(nuevo.getDescripcion());
-		proyecto.setFechaInicio(nuevo.getFechaInicio());
+	public Proyecto guardar(Proyecto proyecto) {
 
 		return proyectoRepo.save(proyecto);
 	}

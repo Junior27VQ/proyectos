@@ -16,13 +16,7 @@ public class EmpleadoService {
 		this.empleadoRepo = empleadoRepo;
 	}
 
-	public Empleado guardar(Empleado nuevo) {
-		Empleado empleado = empleadoRepo.findById(nuevo.getId())
-				.orElseThrow(() -> new RuntimeException("El empleado no existe."));
-
-		empleado.setId(nuevo.getId());
-		empleado.setNombre(nuevo.getNombre());
-		empleado.setCargo(nuevo.getCargo());
+	public Empleado guardar(Empleado empleado) {
 
 		return empleadoRepo.save(empleado);
 	}

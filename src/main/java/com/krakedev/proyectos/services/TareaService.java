@@ -40,7 +40,7 @@ public class TareaService {
 		nuevo.setProyecto(proyecto);
 		nuevo.setEmpleados(empleados);
 
-		return nuevo;
+		return tareaRepo.save(nuevo);
 	}
 
 	public List<Tarea> listar() {

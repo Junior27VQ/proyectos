@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.krakedev.proyectos.entidades.Usuario;
 import com.krakedev.proyectos.services.UsuarioService;
+import com.krakedev.proyectos.security.*;
 import com.krakedev.proyectos.services.TokenBlackListService;
 
 @RestController
@@ -49,9 +50,8 @@ public class AuthController {
 		Usuario autenticado = userService.autenticar(username, password);
 		
 		if(autenticado != null) {
-		
-			
-			return ResponseEntity.ok(Map.of("token", autenticado));
+			String token = JwtUtil.generarToken(autenticado.getUsername(), autenticado.getRol());
+			return ResponseEntity.ok(Map.of("token", token));
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 					.body("El usuario o contraseña incorrecta");

@@ -28,7 +28,7 @@ public class EmpleadoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROL_ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> listar() {
         return new ResponseEntity<>(service.listar(), HttpStatus.OK);
     }

@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			String username = datosToken.getSubject();
 			String rolOriginal = datosToken.getClaim("rol").asString();
 			
-			String rolSpring = "ROL_"+rolOriginal;
+			String rolSpring = "ROLE_"+rolOriginal;
 			
 			SimpleGrantedAuthority authority = new SimpleGrantedAuthority(rolSpring);
 			

@@ -18,7 +18,7 @@ public class ProyectoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROL_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> crear(@RequestBody Proyecto p) {
         try {
             service.guardar(p); 
@@ -29,7 +29,7 @@ public class ProyectoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROL_ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> listar() {
         return new ResponseEntity<>(service.listar(), HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class ProyectoController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROL_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         return service.eliminar(id) ? new ResponseEntity<>(HttpStatus.OK) 
                                     : new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -18,7 +18,7 @@ public class TareaController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROL_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> crear(@RequestBody Tarea t) {
         try {
             // Nota: En tu TareaService.crear, recuerda llamar a tareaRepo.save(nuevo) al final
@@ -29,7 +29,7 @@ public class TareaController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROL_ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<?> listar() {
         return new ResponseEntity<>(service.listar(), HttpStatus.OK);
     }

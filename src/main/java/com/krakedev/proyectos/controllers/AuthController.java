@@ -4,24 +4,29 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.krakedev.proyectos.entidades.Usuario;
+import com.krakedev.proyectos.security.JwtUtil;
 import com.krakedev.proyectos.services.UsuarioService;
+import com.krakedev.proyectos.services.TokenBlackListService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 	private final UsuarioService userService;
-	//private final UsuarioRepository userRepo;
+	private final TokenBlackListService blacklist;
 
-	public AuthController(UsuarioService userService) {
+	public AuthController(UsuarioService userService, TokenBlackListService blacklist) {
 		super();
 		this.userService = userService;
-		//this.userRepo = userRepo;
+		this.blacklist = blacklist;
 	}
 	
 	@PostMapping("/registrar")
@@ -53,6 +58,39 @@ public class AuthController {
 		}
 	};
 	
+	@GetMapping("/perfil")
+	public ResponseEntity<?> verPerfil(@RequestHeader(value = "Authorization", required = false) String authHeader){
+		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado: Debes probeer un token valido en la cabezera Authorization.");
+		}
+		
+		String token = authHeader.substring(7);
+		DecodedJWT datosToken = JwtUtil.validarToken(token);
+		if(datosToken == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado: Token Imbalido o Expirado.");
+		}
+		
+		String usuario = datosToken.getSubject();
+		String rol = datosToken.getClaim("rol").asString();
+		
+		return ResponseEntity.ok(Map.of(
+				"Mensaje", "Bienvenido al sistema protegido por JWT ",
+				"Usuario", usuario,
+				"Rol", rol,
+				"Estatus", "Autenticado corectamente"
+				));
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> lohout(@RequestHeader(value = "Authorization", required = false) String authHeader){
+		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+			String token = authHeader.substring(7);
+			blacklist.invalidarToken(token);
+			return ResponseEntity.ok(Map.of("Mensaje", "Secion cerrada Exitosamente. Token Invalidado."));
+		}else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token no proporcionado.");
+		}
+	};
 	
 
 }

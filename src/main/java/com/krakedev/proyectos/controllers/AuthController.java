@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.krakedev.proyectos.entidades.Usuario;
-import com.krakedev.proyectos.security.JwtUtil;
 import com.krakedev.proyectos.services.UsuarioService;
 import com.krakedev.proyectos.services.TokenBlackListService;
 
@@ -58,29 +58,6 @@ public class AuthController {
 		}
 	};
 	
-	@GetMapping("/perfil")
-	public ResponseEntity<?> verPerfil(@RequestHeader(value = "Authorization", required = false) String authHeader){
-		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado: Debes probeer un token valido en la cabezera Authorization.");
-		}
-		
-		String token = authHeader.substring(7);
-		DecodedJWT datosToken = JwtUtil.validarToken(token);
-		if(datosToken == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado: Token Imbalido o Expirado.");
-		}
-		
-		String usuario = datosToken.getSubject();
-		String rol = datosToken.getClaim("rol").asString();
-		
-		return ResponseEntity.ok(Map.of(
-				"Mensaje", "Bienvenido al sistema protegido por JWT ",
-				"Usuario", usuario,
-				"Rol", rol,
-				"Estatus", "Autenticado corectamente"
-				));
-	}
-	
 	@PostMapping("/logout")
 	public ResponseEntity<?> lohout(@RequestHeader(value = "Authorization", required = false) String authHeader){
 		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -92,5 +69,20 @@ public class AuthController {
 		}
 	};
 	
+	@GetMapping("/perfil")
+	public ResponseEntity<?> verPerfil(){
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		String usuario = auth.getName();
+		String rol = auth.getAuthorities().iterator().next().getAuthority();
+		
+		return ResponseEntity.ok(Map.of(
+				"Mensaje", "Bienvenido al sistema protegido por Sping Security",
+				"Usuario", usuario,
+				"Rol", rol,
+				"Estatus", "Autenticado exitosamente"
+				));
+	}
 
 }

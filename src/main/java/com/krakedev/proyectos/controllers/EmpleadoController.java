@@ -2,6 +2,7 @@ package com.krakedev.proyectos.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.krakedev.proyectos.entidades.Empleado;
 import com.krakedev.proyectos.services.EmpleadoService;
@@ -27,6 +28,7 @@ public class EmpleadoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROL_ADMIN','USER')")
     public ResponseEntity<?> listar() {
         return new ResponseEntity<>(service.listar(), HttpStatus.OK);
     }

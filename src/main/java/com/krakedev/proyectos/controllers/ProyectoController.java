@@ -2,6 +2,7 @@ package com.krakedev.proyectos.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.krakedev.proyectos.entidades.Proyecto;
 import com.krakedev.proyectos.services.ProyectoService;
@@ -17,6 +18,7 @@ public class ProyectoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROL_ADMIN')")
     public ResponseEntity<?> crear(@RequestBody Proyecto p) {
         try {
             service.guardar(p); 
@@ -27,6 +29,7 @@ public class ProyectoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROL_ADMIN','USER')")
     public ResponseEntity<?> listar() {
         return new ResponseEntity<>(service.listar(), HttpStatus.OK);
     }
@@ -46,6 +49,7 @@ public class ProyectoController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROL_ADMIN')")
     public ResponseEntity<?> eliminar(@PathVariable int id) {
         return service.eliminar(id) ? new ResponseEntity<>(HttpStatus.OK) 
                                     : new ResponseEntity<>(HttpStatus.NOT_FOUND);

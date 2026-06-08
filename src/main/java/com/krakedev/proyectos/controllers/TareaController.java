@@ -2,6 +2,7 @@ package com.krakedev.proyectos.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.krakedev.proyectos.entidades.Tarea;
 import com.krakedev.proyectos.services.TareaService;
@@ -17,6 +18,7 @@ public class TareaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROL_ADMIN')")
     public ResponseEntity<?> crear(@RequestBody Tarea t) {
         try {
             // Nota: En tu TareaService.crear, recuerda llamar a tareaRepo.save(nuevo) al final
@@ -27,6 +29,7 @@ public class TareaController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROL_ADMIN','USER')")
     public ResponseEntity<?> listar() {
         return new ResponseEntity<>(service.listar(), HttpStatus.OK);
     }

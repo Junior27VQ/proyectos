@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		String authHeder = request.getHeader("Authorization");
 		if(authHeder == null || !authHeder.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
+			return;
 		}
 		
 		String token = authHeder.substring(7);
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 			String username = datosToken.getSubject();
 			String rolOriginal = datosToken.getClaim("rol").asString();
 			
-			String rolSpring = "ROLE_"+rolOriginal;
+			String rolSpring = "ROL_"+rolOriginal;
 			
 			SimpleGrantedAuthority authority = new SimpleGrantedAuthority(rolSpring);
 			
